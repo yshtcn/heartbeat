@@ -6,7 +6,7 @@
 
 ## 使用方法
 
-### 获得python和把heartbeat
+### 下载程序：
 确保安装了基本的python环境，把heartbeat.py和config.ini保存下来。
 
 ### 直接运行：
