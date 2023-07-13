@@ -8,6 +8,7 @@ py heartbeat.py
 观察是否出错，一般错误主要是因为缺少所需的库造成的。
 
 ## 安装所有涉及到的库：
+这里使用了清华大学的源进行安装。
 ```
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pystray pillow requests configparser
 ```
