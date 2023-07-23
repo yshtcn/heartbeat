@@ -35,7 +35,8 @@ Python is not installed.
 ```
 
 ### 编辑配置文件：
-运行前，记得打开[config.ini配置文件](https://github.com/yshtcn/heartbeat/blob/main/config.ini)接收心跳包的服务器地址.
+运行前，记得打开把[config.Exsample.ini配置文件](https://github.com/yshtcn/heartbeat/blob/main/config.Exsample.ini)复制一份改名为config.ini，并打开配置接收心跳包的服务器地址.
+如果不存在config.ini直接运行程序，程序会将config.Exsample.ini范例配置自动复制一份。
 
 ### 前台运行：
 双击运行heartbeat.bat，检查是否正常工作。正常工作时会显示一个命令行窗口，任务栏托盘会有小图标，可以右键退出。
