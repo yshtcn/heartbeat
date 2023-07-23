@@ -8,7 +8,7 @@
 
 ### 下载程序：
 1. 下载并安装[python](https://python.org/downloads/release/)环境。
-2. 下载[本程序](https://github.com/yshtcn/heartbeat/)并且释放到任意目录下。
+2. 下载[本项目](https://github.com/yshtcn/heartbeat/)并且释放到任意目录下。
 
 ### 安装所有涉及到的库：
 
