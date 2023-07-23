@@ -18,7 +18,7 @@ py heartbeat.py
 ### 安装所有涉及到的库：
 这里使用了清华大学的源进行安装。
 ```
-pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pystray pillow requests configparser
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pystray pillow requests configparser PySocks
 ```
 
 
