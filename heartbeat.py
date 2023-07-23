@@ -52,11 +52,18 @@ def quit_action(icon, item):
 image = create_image()
 icon = pystray.Icon("系统心跳", image, "系统状态报送", menu=pystray.Menu(pystray.MenuItem('关闭主机状态报送', quit_action)))
 
+# 检查config.ini是否存在，如果不存在，从config.Exsample.ini复制一份
+config_path = os.path.join(current_dir, 'config.ini')
+if not os.path.exists(config_path):
+    exsample_config_path = os.path.join(current_dir, 'config.Exsample.ini')
+    shutil.copyfile(exsample_config_path, config_path)
+
 # 从配置文件读取设置
 config = configparser.ConfigParser()
-config.read(os.path.join(current_dir, 'config.ini'))
+config.read(config_path, encoding='utf-8')  # 使用UTF-8编码来读取文件
 interval = config.getint('Settings', 'interval')
 heartbeat_url = config.get('Settings', 'heartbeat_url')
+
 
 # 创建一个新的Session对象，并根据需要配置代理
 session = requests.Session()
