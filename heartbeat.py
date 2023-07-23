@@ -7,6 +7,7 @@ import threading
 import logging
 from datetime import datetime
 import os
+import shutil
 
 # 获取当前脚本所在的目录
 current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -50,7 +51,6 @@ def quit_action(icon, item):
     stop_heartbeat.set()
 
 image = create_image()
-icon = pystray.Icon("系统心跳", image, "系统状态报送", menu=pystray.Menu(pystray.MenuItem('关闭主机状态报送', quit_action)))
 
 # 检查config.ini是否存在，如果不存在，从config.Exsample.ini复制一份
 config_path = os.path.join(current_dir, 'config.ini')
@@ -60,10 +60,21 @@ if not os.path.exists(config_path):
 
 # 从配置文件读取设置
 config = configparser.ConfigParser()
-config.read(config_path, encoding='utf-8')  # 使用UTF-8编码来读取文件
+
+# 尝试用UTF-8编码读取文件，如果失败，尝试GBK编码
+try:
+    config.read(config_path, encoding='utf-8')
+except UnicodeDecodeError:
+    config.read(config_path, encoding='gbk')
+
 interval = config.getint('Settings', 'interval')
 heartbeat_url = config.get('Settings', 'heartbeat_url')
 
+# 从配置文件获取标题和提示信息
+title = config.get('Settings', 'title')
+tips = config.get('Settings', 'tips')
+
+icon = pystray.Icon(title, image, tips, menu=pystray.Menu(pystray.MenuItem(tips, quit_action)))
 
 # 创建一个新的Session对象，并根据需要配置代理
 session = requests.Session()
