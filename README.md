@@ -7,28 +7,46 @@
 ## 使用方法
 
 ### 下载程序：
-确保安装了基本的python环境，[然后下载heartbeat](https://github.com/yshtcn/heartbeat/releases/)
-
-### 直接运行：
-```
-py heartbeat.py
-```
-观察是否出错，一般错误主要是因为缺少所需的库造成的。
+1.下载并安装[python](https://python.org/downloads/release/)环境。
+2.下载[本程序](https://github.com/yshtcn/heartbeat/)并且释放到任意目录下。
 
 ### 安装所有涉及到的库：
-这里使用了清华大学的源进行安装。
+
+#### 方法一：手动安装：
+尝试运行py和pip是否正常工作，然后安装所需的库。
 ```
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pystray pillow requests configparser PySocks
 ```
 
+#### 方法二:自动安装
+双击运行Auto-installer-package.bat。批处理会先检查python和pip的安装情况。如果正确安装会自动继续安装所需的库，正常安装时，输出显示如下：
+```
+echo Pip detected!
+echo Python detected!
+...(pip的安装信息)...
+安装完成
+```
+如果提示以下任意一种情况，建议重新安装（修复安装）python：
+```
+pip is not installed.
+```
+```
+Python is not installed.
+```
+
+### 编辑配置文件：
+运行前，记得打开[config.ini配置文件](https://github.com/yshtcn/heartbeat/blob/main/config.ini)接收心跳包的服务器地址.
+
+### 前台运行：
+双击运行heartbeat.bat，检查是否正常工作。正常工作时会显示一个命令行窗口，任务栏托盘会有小图标，可以右键退出。
+因为会持续打开一个命令行窗口，不便于日常使用，一般只用于初次检查和排错。
 
 ### 后台运行：
-```
-pythonw heartbeat.py
-```
+双击运行heartbeat_with_pythonw.bat，任务栏托盘会有小图标，可以右键退出。
+可以把heartbeat_with_pythonw.bat加入开机自动启动（例如windows启动文件夹、计划任务等），便于开机自启。
 
-可以创建一个批处理启动，这里可以使用start命令，也可以用windows计划任务自动启动。
+### 日志文件
+心跳日志会存放在：heartbeat.log，包括时间和返回值，例如下面是一个返回200（正常值）的日志：
 ```
-start pythonw heartbeat.py
+INFO:root:2023-07-23 13:35:16.764205 Response status code: 200
 ```
-
