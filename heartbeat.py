@@ -74,7 +74,7 @@ heartbeat_url = config.get('Settings', 'heartbeat_url')
 title = config.get('Settings', 'title')
 tips = config.get('Settings', 'tips')
 
-icon = pystray.Icon(title, image, tips, menu=pystray.Menu(pystray.MenuItem(tips, quit_action)))
+icon = pystray.Icon(title, image, tips, menu=pystray.Menu(pystray.MenuItem('关闭程序', quit_action)))
 
 # 创建一个新的Session对象，并根据需要配置代理
 session = requests.Session()
