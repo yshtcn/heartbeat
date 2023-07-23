@@ -24,7 +24,7 @@ pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pystray pillow requests 
 echo Pip detected!
 echo Python detected!
 ...(pip的安装信息)...
-安装完成
+All Done
 ```
 如果提示以下任意一种情况，建议重新安装（修复安装）python：
 ```
