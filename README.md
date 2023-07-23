@@ -19,7 +19,7 @@ pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pystray pillow requests 
 ```
 
 #### 方法二:自动安装
-双击运行Auto-installer-package.bat。批处理会先检查python和pip的安装情况。如果正确安装会自动继续安装所需的库，正常安装时，输出显示如下：
+解压Auto-installer-package.zip，得到Auto-installer-package.bat，双击运行。批处理会先检查python和pip的安装情况。如果正确安装会自动继续安装所需的库，正常安装时，输出显示如下：
 ```
 echo Pip detected!
 echo Python detected!
