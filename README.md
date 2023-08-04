@@ -2,7 +2,7 @@
 用python写的简易心跳工具，配合Uptime-kuma的被动监控功能（当然你也可以自己实现服务端），实现监测PC客户端的运行情况。
 
 ## 运行效果
-通过访问连接，服务端会实现被动检测。同时本地访问结果会记录在heartbeat.log，如果服务端异常可以通过返回的代码进行故障排查。
+通过访问连接，服务端会实现被动检测。同时本地访问结果会回显记录在heartbeat.log，如果服务端异常可以通过返回的代码进行故障排查。
 
 ## 使用方法
 
@@ -39,7 +39,7 @@ Python is not installed.
 如果不存在config.ini直接运行程序，程序会将config.Exsample.ini范例配置自动复制一份。
 
 ### 前台运行：
-双击运行heartbeat.bat，检查是否正常工作。正常工作时会显示一个命令行窗口，任务栏托盘会有小图标，可以右键退出。
+双击运行heartbeat.bat，检查是否正常工作。正常工作时会显示一个命令行窗口，并将日志回显在窗口，任务栏托盘会有小图标，可以右键退出。
 因为会持续打开一个命令行窗口，不便于日常使用，一般只用于初次检查和排错。
 
 ### 后台运行：
@@ -47,7 +47,7 @@ Python is not installed.
 可以把heartbeat_with_pythonw.bat加入开机自动启动（例如windows启动文件夹、计划任务等），便于开机自启。
 
 ### 日志文件
-心跳日志会存放在：heartbeat.log，包括时间和返回值，例如下面是一个返回200（正常值）的日志：
+心跳日志会存放在：heartbeat.log，包括时间和返回值，如果使用py执行，还会日志会被回显。例如下面是一个返回200（正常值）的日志：
 ```
-INFO:root:2023-07-23 13:35:16.764205 Response status code: 200
+2023-08-04 11:46:15.306916 Ping: 8ms. Final URL: http://example.com/heartbeat?ping=8. Response status code: 200
 ```
