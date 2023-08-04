@@ -23,7 +23,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 # Create file handler
-file_handler = logging.FileHandler(log_file_path)
+file_handler = logging.FileHandler(log_file_path, encoding='utf-8')
 file_handler.setLevel(logging.INFO)
 
 # Create console handler
@@ -61,22 +61,25 @@ def ping(host):
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
 
-    # Try decoding with the system's default encoding
+    # Try decoding with GBK encoding first
     try:
-        stdout = stdout.decode()
+        stdout = stdout.decode('gbk')
     except UnicodeDecodeError:
         stdout = stdout.decode(sys.getdefaultencoding(), errors='ignore')
 
+    ping_result = ""
     for line in stdout.split('\n'):
         if 'ms' in line:
             # Extract the time value right before 'ms'
             time_str = line.split('ms')[0].strip().split(' ')[-1]
             # Remove any non-digit characters
-            return ''.join(filter(str.isdigit, time_str))
+            ping_result = ''.join(filter(str.isdigit, time_str))
 
+    if ping_result.isdigit() and int(ping_result) < 10000:
+        return ping_result
+
+    logger.info(f"{datetime.now()} Ping command output: {repr(stdout)}")
     return "ping failed"
-
-
 
 
 def heartbeat(interval, heartbeat_url, session, ping_host):
@@ -85,7 +88,12 @@ def heartbeat(interval, heartbeat_url, session, ping_host):
             ping_result = ""
             if '{ping}' in heartbeat_url and ping_host:
                 ping_result = ping(ping_host)
-            final_url = heartbeat_url.format(ping=ping_result)
+                if ping_result == "ping failed":
+                    final_url = heartbeat_url.format(ping="")
+                else:
+                    final_url = heartbeat_url.format(ping=ping_result)
+            else:
+                final_url = heartbeat_url
             response = session.get(final_url)
             logger.info(f"{datetime.now()} Ping: {ping_result}ms. Final URL: {final_url}. Response status code: {response.status_code}")
         except requests.exceptions.RequestException as e:
