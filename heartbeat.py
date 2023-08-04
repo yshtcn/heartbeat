@@ -76,10 +76,14 @@ def ping(host):
             ping_result = ''.join(filter(str.isdigit, time_str))
 
     if ping_result.isdigit() and int(ping_result) < 10000:
+        # If ping result is 0, change it to 1
+        if int(ping_result) == 0:
+            ping_result = '1'
         return ping_result
 
     logger.info(f"{datetime.now()} Ping command output: {repr(stdout)}")
     return "ping failed"
+
 
 
 def heartbeat(interval, heartbeat_url, session, ping_host):
