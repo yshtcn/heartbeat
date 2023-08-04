@@ -47,7 +47,7 @@ Python is not installed.
 可以把heartbeat_with_pythonw.bat加入开机自动启动（例如windows启动文件夹、计划任务等），便于开机自启。
 
 ### 日志文件
-心跳日志会存放在：heartbeat.log，包括时间和返回值，如果使用py执行，还会日志会被回显。例如下面是一个返回200（正常值）的日志：
+心跳日志会存放在：heartbeat.log，包括时间和返回值。例如下面是一个返回200（正常值）的日志：
 ```
 2023-08-04 11:46:15.306916 Ping: 8ms. Final URL: http://example.com/heartbeat?ping=8. Response status code: 200
 ```
