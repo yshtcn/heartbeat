@@ -1,3 +1,4 @@
+import sys
 import configparser
 import pystray
 from PIL import Image, ImageDraw
@@ -8,13 +9,30 @@ import logging
 from datetime import datetime
 import os
 import shutil
+import subprocess
+import platform
 
 # 获取当前脚本所在的目录
 current_dir = os.path.dirname(os.path.realpath(__file__))
 
 # 创建日志文件
 log_file_path = os.path.join(current_dir, 'heartbeat.log')
-logging.basicConfig(filename=log_file_path, level=logging.INFO)
+
+# Configure logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+# Create file handler
+file_handler = logging.FileHandler(log_file_path)
+file_handler.setLevel(logging.INFO)
+
+# Create console handler
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.INFO)
+
+# Add the handlers to the logger
+logger.addHandler(file_handler)
+logger.addHandler(console_handler)
 
 def create_image():
     width, height = 64, 64
@@ -33,13 +51,45 @@ def create_image():
 # Create an Event object to signal the heartbeat thread to stop
 stop_heartbeat = threading.Event()
 
-def heartbeat(interval, heartbeat_url, session):
+def ping(host):
+    # ping command, use -c or -n parameter depending on the operating system
+    param = '-n' if platform.system().lower() == 'windows' else '-c'
+    command = ['ping', param, '1', host]
+    if platform.system().lower() == 'windows':
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, creationflags=subprocess.CREATE_NO_WINDOW)
+    else:
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = process.communicate()
+
+    # Try decoding with the system's default encoding
+    try:
+        stdout = stdout.decode()
+    except UnicodeDecodeError:
+        stdout = stdout.decode(sys.getdefaultencoding(), errors='ignore')
+
+    for line in stdout.split('\n'):
+        if 'ms' in line:
+            # Extract the time value right before 'ms'
+            time_str = line.split('ms')[0].strip().split(' ')[-1]
+            # Remove any non-digit characters
+            return ''.join(filter(str.isdigit, time_str))
+
+    return "ping failed"
+
+
+
+
+def heartbeat(interval, heartbeat_url, session, ping_host):
     while not stop_heartbeat.is_set():
         try:
-            response = session.get(heartbeat_url)
-            logging.info(f"{datetime.now()} Response status code: {response.status_code}")
+            ping_result = ""
+            if '{ping}' in heartbeat_url and ping_host:
+                ping_result = ping(ping_host)
+            final_url = heartbeat_url.format(ping=ping_result)
+            response = session.get(final_url)
+            logger.info(f"{datetime.now()} Ping: {ping_result}ms. Final URL: {final_url}. Response status code: {response.status_code}")
         except requests.exceptions.RequestException as e:
-            logging.info(f"{datetime.now()} An error occurred: {e}")
+            logger.info(f"{datetime.now()} An error occurred: {e}")
         time.sleep(interval)
 
 def setup(icon):
@@ -69,6 +119,7 @@ except UnicodeDecodeError:
 
 interval = config.getint('Settings', 'interval')
 heartbeat_url = config.get('Settings', 'heartbeat_url')
+heartbeat_ping = config.get('Settings', 'heartbeat_ping', fallback=None)
 
 # 从配置文件获取标题和提示信息
 title = config.get('Settings', 'title')
@@ -83,7 +134,7 @@ if config.get('Settings', 'proxy_enabled', fallback='0') == '1':
                        'https': config.get('Settings', 'proxy_url')}
 
 # Start the heartbeat function in a new thread
-t = threading.Thread(target=heartbeat, args=(interval, heartbeat_url, session))
+t = threading.Thread(target=heartbeat, args=(interval, heartbeat_url, session, heartbeat_ping))
 t.start()
 
 icon.run(setup)
