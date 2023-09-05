@@ -28,9 +28,9 @@
 
 ### 安装必要的python库
 使用命令行执行以下命令：
-···
+```
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pystray pillow requests configparser PySocks
-···
+```
 
 ### 写一个批处理方便执行
 每次使用py命令并不方便，可以把以下内容保存为bat文件。
