@@ -120,6 +120,8 @@ image = create_image()
 config_path = os.path.join(current_dir, 'config.ini')
 if not os.path.exists(config_path):
     exsample_config_path = os.path.join(current_dir, 'config.Exsample.ini')
+    if getattr(sys, 'frozen', False):
+        exsample_config_path = os.path.join(sys._MEIPASS, 'config.Exsample.ini')
     shutil.copyfile(exsample_config_path, config_path)
 
 # 从配置文件读取设置
