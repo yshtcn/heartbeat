@@ -15,7 +15,7 @@ import platform
 # 获取当前脚本所在的目录
 current_dir = os.path.dirname(os.path.realpath(__file__))
 if getattr(sys, 'frozen', False):
-    current_dir = sys._MEIPASS  # 如果是frozen的（即打包后的exe），使用这个目录
+    current_dir = os.path.dirname(sys.executable)  # 如果是frozen的（即打包后的exe），使用这个目录
 
 # 创建日志文件
 log_file_path = os.path.join(current_dir, 'heartbeat.log')
