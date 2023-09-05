@@ -32,7 +32,46 @@
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pystray pillow requests configparser PySocks
 ```
 
-### 写一个批处理方便执行
+### 自动检测安装环境批处理
+自动检测python安装及必要的库支持，可以把以下内容保存为bat文件执行。
+```
+@echo off
+cd /d %~dp0
+setlocal enabledelayedexpansion
+
+:: 检查pip
+for /f "tokens=1" %%i in ('pip --version 2^>^&1 ^| findstr /C:"pip"') do (
+    set PIPVER=%%i
+)
+if "!PIPVER!" == "pip" (
+    echo Pip detected!
+) else (
+    echo Error: pip is not installed.
+    pause
+    exit /b 1
+)
+
+:: 检查python
+for /f "tokens=1" %%h in ('python --version 2^>^&1') do (
+    set PYVER2=%%h
+)
+if "!PYVER2!" == "Python" (
+    echo Python detected!
+) else (
+    echo Error: Python is not installed.
+    pause
+    exit /b 1
+)
+
+endlocal
+
+
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pystray pillow requests configparser PySocks
+@echo All Done
+pause
+```
+
+### 执行批处理
 每次使用py命令并不方便，可以把以下内容保存为bat文件。
 ```
 @echo off
@@ -42,7 +81,7 @@ py heartbeat.py
 pause
 ```
 
-### 写一个批处理方便执行（静默）
+### 静默执行批处理
 如果希望后台运行，可以把以下内容保存为bat文件执行。
 ```
 @echo off
