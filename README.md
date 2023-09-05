@@ -23,17 +23,15 @@
 ## 执行python源代码
 如果你需要直接使用源代码，可能需要用到以下几个步骤：
 
-### 确保安装Python
+### 确保安装Python和必要的python库
 可以从[这里下载最新的python环境](https://python.org/downloads/release/)。
 
-### 安装必要的python库
 使用命令行执行以下命令：
 ```
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple pystray pillow requests configparser PySocks
 ```
 
-### 自动检测安装环境批处理
-自动检测python安装及必要的库支持，可以把以下内容保存为bat文件执行。
+如果希望自动检测python安装及必要的库支持，可以把以下内容保存为bat文件执行。
 ```
 @echo off
 cd /d %~dp0
@@ -81,11 +79,26 @@ py heartbeat.py
 pause
 ```
 
-### 静默执行批处理
-如果希望后台运行，可以把以下内容保存为bat文件执行。
+如果希望后台静默运行，可以把以下内容保存为bat文件执行。
 ```
 @echo off
 cd /d %~dp0
 start pythonw heartbeat.py
 ```
 
+### 打包成exe
+在确保已经安装python 的情况下，使用命令行执行以下命令以安装PyInstaller：
+```
+pip install pyinstaller -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
+打包为Windows可执行程序：
+```
+@echo off
+cd /d %~dp0
+rd /S /Q dist
+pyinstaller --noconsole --add-data "config.Exsample.ini;." heartbeat.py
+del /F /Q heartbeat.spec
+rd /S /Q build
+```
+其中“--onefile”表示单文件模式，--noconsole表示无命令行模式
