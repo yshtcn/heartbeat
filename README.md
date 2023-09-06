@@ -102,3 +102,7 @@ del /F /Q heartbeat.spec
 rd /S /Q build
 ```
 其中“--onefile”表示单文件模式，--noconsole表示无命令行模式
+
+## 授权信息
+项目地址： https://github.com/yshtcn/heartbeat
+项目授权方式：[Apache-2.0 license](https://github.com/yshtcn/heartbeat/blob/main/LICENSE)

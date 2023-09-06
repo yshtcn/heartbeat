@@ -110,3 +110,4 @@ rename dist %versionFolder%
 
 :: 添加需要一起打包的文件
 copy %~dp0\config.Exsample.ini %~dp0\build\%versionFolder%\
+copy %~dp0\README.md %~dp0\build\%versionFolder%\
