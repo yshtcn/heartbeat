@@ -87,11 +87,9 @@ start pythonw heartbeat.py
 ```
 
 ### 打包成exe
-1. 在确保已经安装python 的情况下，使用命令行执行以下命令以安装PyInstaller：
-```
-pip install pyinstaller -i https://pypi.tuna.tsinghua.edu.cn/simple
-```
-2. 根据你的需要修改heartbeat_pyinstaller.bat并执行它。
+1. 根据你的需要修改heartbeat_pyinstaller.bat,特别是如果你不希望自动更新你的pyinstaller
+
+2. 执行heartbeat_pyinstaller.bat。
 
 
 ## 授权信息
