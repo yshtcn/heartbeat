@@ -87,21 +87,12 @@ start pythonw heartbeat.py
 ```
 
 ### 打包成exe
-在确保已经安装python 的情况下，使用命令行执行以下命令以安装PyInstaller：
+1. 在确保已经安装python 的情况下，使用命令行执行以下命令以安装PyInstaller：
 ```
 pip install pyinstaller -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
+2. 根据你的需要修改heartbeat_pyinstaller.bat并执行它。
 
-打包为Windows可执行程序：
-```
-@echo off
-cd /d %~dp0
-rd /S /Q dist
-pyinstaller --onefile --noconsole --add-data "config.Exsample.ini;." heartbeat.py
-del /F /Q heartbeat.spec
-rd /S /Q build
-```
-其中“--onefile”表示单文件模式，--noconsole表示无命令行模式
 
 ## 授权信息
 项目地址： https://github.com/yshtcn/heartbeat
