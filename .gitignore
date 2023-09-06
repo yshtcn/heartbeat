@@ -2,6 +2,7 @@
 
 build/
 version_info.txt
+config.ini
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
