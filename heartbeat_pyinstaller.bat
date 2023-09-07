@@ -1,9 +1,13 @@
 @echo off
+
+
 title "AutoPyInstaller：安装升级pyinstaller"
 :: 安装/更新pyinstaller(注意：不希望自动安装/更新pyinstaller记得注释掉）
 pip install pyinstaller -i https://pypi.tuna.tsinghua.edu.cn/simple
-cls
 
+title "AutoPyInstaller：安装升级程序所用到的库"
+pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+cls
 
 :: 更新标题
 title "AutoPyInstaller：初始化"
@@ -101,7 +105,7 @@ rd /S /Q %~dp0\build\build
 
 :: 进入打包目录并开始打包
 cd /d %~dp0\build
-pyinstaller --onefile --noconsole --version-file %~dp0\version_info.txt --add-data "%~dp0\config.Exsample.ini;." %~dp0\heartbeat.py
+pyinstaller --hidden-import=plyer.platforms.win.notification --onefile --noconsole --version-file %~dp0\version_info.txt --add-data "%~dp0\config.Exsample.ini;." %~dp0\heartbeat.py
 
 ::更新标题
 title "AutoPyInstaller：打包完毕，进行一些收尾工作"

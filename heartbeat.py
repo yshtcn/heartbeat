@@ -13,6 +13,26 @@ import shutil
 import subprocess
 import platform
 import winreg
+from plyer import notification
+
+def display_notification(title, message, app_name='YourAppName', timeout=10):
+    """
+    Display a Windows notification.
+
+    Parameters:
+    - title (str): The title of the notification.
+    - message (str): The message content of the notification.
+    - app_name (str): The name of the application. Default is 'YourAppName'.
+    - timeout (int): The time (in seconds) before the notification disappears. Default is 10 seconds.
+    """
+    notification.notify(
+        title=title,
+        message=message,
+        app_name=app_name,
+        timeout=timeout
+    )
+
+
 
 
 
@@ -146,15 +166,20 @@ title = config.get('Settings', 'title')
 tips = config.get('Settings', 'tips')
 
 
+
+
+
 # 添加程序到Windows启动
 def add_to_startup(program_name, executable_path):
     try:
         key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, winreg.KEY_SET_VALUE)
         winreg.SetValueEx(key, program_name, 0, winreg.REG_SZ, executable_path)
-        winreg.CloseKey(key)
+        winreg.CloseKey(key)        
         logger.info(f"Program added to startup: Program name = {program_name}, Executable path = {executable_path}")
+        display_notification(f"{program_name}已添加到自启动项", f"启动路径： {executable_path}")
     except Exception as e:
         logger.error(f"An error occurred while adding the program to startup: {e}")
+        display_notification(f"{program_name}未能添加到自启动项目", f"错误原因： {e}")
 
 # 从Windows启动中移除程序
 def remove_from_startup(program_name):
@@ -163,8 +188,10 @@ def remove_from_startup(program_name):
         winreg.DeleteValue(key, program_name)
         winreg.CloseKey(key)
         logger.info(f"Program removed from startup: Program name = {program_name}")
+        display_notification(f"{program_name}已从自启动项移除", f"{program_name}将不再自动启动")
     except Exception as e:
         logger.error(f"An error occurred while removing the program from startup: {e}")
+        display_notification(f"{program_name}未能从自启动项移除", f"错误原因： {e}")
 
 # 检查程序是否已在Windows启动中
 def is_in_startup(program_name):
@@ -183,18 +210,24 @@ def is_packaged():
 
 # 切换Windows启动状态
 def toggle_startup(icon, item):
-    program_name = "heartbeat"
+    program_name =  title
     if is_in_startup(program_name):
         remove_from_startup(program_name)
     else:
         add_to_startup(program_name, sys.executable)
 
+def open_current_dir(text):
+    os.startfile(current_dir)
+
 # 创建状态栏图标和菜单
-menu_items = [item('关闭程序', quit_action)]
+menu_items = [
+    item('打开程序目录', open_current_dir),
+    item('关闭程序', quit_action)
+]
 
 # 判断是否以.exe方式运行，添加相应菜单项
 if is_packaged():
-    menu_items.insert(0, item('添加/取消自启动', toggle_startup, checked=lambda text: is_in_startup("heartbeat")))
+    menu_items.insert(0, item('添加/取消自启动', toggle_startup, checked=lambda text: is_in_startup(title)))
 else:
     menu_items.insert(0, item('Py运行不支持自启动', lambda text: None, enabled=False))
 
@@ -213,6 +246,7 @@ if config.get('Settings', 'proxy_enabled', fallback='0') == '1':
                        'https': config.get('Settings', 'proxy_url')}
 
 # Start the heartbeat function in a new thread
+display_notification(f'{title}已启动', f'{tips}')
 t = threading.Thread(target=heartbeat, args=(interval, heartbeat_url, session, heartbeat_ping))
 t.start()
 
