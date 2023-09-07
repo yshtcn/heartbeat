@@ -2,6 +2,7 @@
 title "AutoPyInstaller：安装升级pyinstaller"
 :: 安装/更新pyinstaller(注意：不希望自动安装/更新pyinstaller记得注释掉）
 pip install pyinstaller -i https://pypi.tuna.tsinghua.edu.cn/simple
+cls
 
 
 :: 更新标题
