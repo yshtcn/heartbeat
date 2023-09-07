@@ -216,12 +216,18 @@ def toggle_startup(icon, item):
     else:
         add_to_startup(program_name, sys.executable)
 
+def open_current_dir(text):
+    os.startfile(current_dir)
+
 # 创建状态栏图标和菜单
-menu_items = [item('关闭程序', quit_action)]
+menu_items = [
+    item('打开程序目录', open_current_dir),
+    item('关闭程序', quit_action)
+]
 
 # 判断是否以.exe方式运行，添加相应菜单项
 if is_packaged():
-    menu_items.insert(0, item('添加/取消自启动', toggle_startup, checked=lambda text: is_in_startup("heartbeat")))
+    menu_items.insert(0, item('添加/取消自启动', toggle_startup, checked=lambda text: is_in_startup(title)))
 else:
     menu_items.insert(0, item('Py运行不支持自启动', lambda text: None, enabled=False))
 
