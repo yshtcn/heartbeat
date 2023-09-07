@@ -1,6 +1,7 @@
 import sys
 import configparser
 import pystray
+from pystray import MenuItem as item
 from PIL import Image, ImageDraw
 import requests
 import time
@@ -11,6 +12,9 @@ import os
 import shutil
 import subprocess
 import platform
+import winreg
+
+
 
 # 获取当前脚本所在的目录
 current_dir = os.path.dirname(os.path.realpath(__file__))
@@ -141,7 +145,66 @@ heartbeat_ping = config.get('Settings', 'heartbeat_ping', fallback=None)
 title = config.get('Settings', 'title')
 tips = config.get('Settings', 'tips')
 
-icon = pystray.Icon(title, image, tips, menu=pystray.Menu(pystray.MenuItem('关闭程序', quit_action)))
+
+# 添加程序到Windows启动
+def add_to_startup(program_name, executable_path):
+    try:
+        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, winreg.KEY_SET_VALUE)
+        winreg.SetValueEx(key, program_name, 0, winreg.REG_SZ, executable_path)
+        winreg.CloseKey(key)
+        logger.info(f"Program added to startup: Program name = {program_name}, Executable path = {executable_path}")
+    except Exception as e:
+        logger.error(f"An error occurred while adding the program to startup: {e}")
+
+# 从Windows启动中移除程序
+def remove_from_startup(program_name):
+    try:
+        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, winreg.KEY_SET_VALUE)
+        winreg.DeleteValue(key, program_name)
+        winreg.CloseKey(key)
+        logger.info(f"Program removed from startup: Program name = {program_name}")
+    except Exception as e:
+        logger.error(f"An error occurred while removing the program from startup: {e}")
+
+# 检查程序是否已在Windows启动中
+def is_in_startup(program_name):
+    try:
+        key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", 0, winreg.KEY_READ)
+        value, _ = winreg.QueryValueEx(key, program_name)
+        winreg.CloseKey(key)
+        return True
+    except WindowsError:
+        return False
+    
+# 检查是否是通过PyInstaller打包的程序
+def is_packaged():
+    return getattr(sys, 'frozen', False)
+
+
+# 切换Windows启动状态
+def toggle_startup(icon, item):
+    program_name = "heartbeat"
+    if is_in_startup(program_name):
+        remove_from_startup(program_name)
+    else:
+        add_to_startup(program_name, sys.executable)
+
+# 创建状态栏图标和菜单
+menu_items = [item('关闭程序', quit_action)]
+
+# 判断是否以.exe方式运行，添加相应菜单项
+if is_packaged():
+    menu_items.insert(0, item('添加/取消自启动', toggle_startup, checked=lambda text: is_in_startup("heartbeat")))
+else:
+    menu_items.insert(0, item('Py运行不支持自启动', lambda text: None, enabled=False))
+
+menu = pystray.Menu(*menu_items)
+
+# 创建并运行状态栏图标
+icon = pystray.Icon(title, image, tips, menu)
+
+
+#icon = pystray.Icon(title, image, tips, menu=pystray.Menu(pystray.MenuItem('关闭程序', quit_action)))
 
 # 创建一个新的Session对象，并根据需要配置代理
 session = requests.Session()
