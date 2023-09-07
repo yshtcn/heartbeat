@@ -1,9 +1,13 @@
 @echo off
+
+
 title "AutoPyInstaller：安装升级pyinstaller"
 :: 安装/更新pyinstaller(注意：不希望自动安装/更新pyinstaller记得注释掉）
 pip install pyinstaller -i https://pypi.tuna.tsinghua.edu.cn/simple
-cls
 
+title "AutoPyInstaller：安装升级程序所用到的库"
+pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+cls
 
 :: 更新标题
 title "AutoPyInstaller：初始化"
